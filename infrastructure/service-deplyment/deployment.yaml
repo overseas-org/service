@@ -17,16 +17,18 @@ spec:
         app: service
         service: service
     spec:
-      volumes:
-      - name: service-volume
-        persistentVolumeClaim:
-          claimName: service
+
       containers:
       - name: service-container
         image: hhana982/service:1.<version>
         ports:
         - containerPort: 5000
-        volumeMounts:
-        - mountPath: "/"
-          name: service-volume
         env: 
+        - name: DB_HOST
+          value: "127.0.0.1"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWORD
+          value: "rootpassword"
+        - name: DB_PORT
+          value: "3308"

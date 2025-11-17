@@ -1,0 +1,7 @@
+{
+    "ServiceDb": {
+        "db_type": "VARCHAR(100)",
+        "db_flavor": "VARCHAR(100)",
+        "infrastructure_id": "INT"
+    }
+}

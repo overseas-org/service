@@ -1,0 +1,10 @@
+{
+    "Dockerhub": {
+        "connector_id": "INT",
+        "url": "VARCHAR(100)",
+        "image_name": "VARCHAR(100)",
+        "exist": "VARCHAR(10)"
+    }
+
+    
+}

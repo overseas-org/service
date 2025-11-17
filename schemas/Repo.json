@@ -1,0 +1,10 @@
+
+{
+    "Github": {
+        "name": "VARCHAR(100)",
+        "connector_id": "INT",
+        "url":"VARCHAR(100)",
+        "webhook": "VARCHAR(100)",
+        "exist": "VARCHAR(10)"
+    }
+}

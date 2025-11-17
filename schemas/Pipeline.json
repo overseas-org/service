@@ -1,0 +1,8 @@
+{
+    "Jenkins": {
+        "connector_id": "INT",
+        "folder": "VARCHAR(100)",
+        "url": "VARCHAR(100)",
+        "name": "VARCHAR(100)"
+    }
+}

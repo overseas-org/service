@@ -1,0 +1,9 @@
+{
+    "name": str,
+    "repo": {
+        "name": str,
+        "connector_id": int,
+        //"url": str,
+        //"webhook": str
+    }
+}

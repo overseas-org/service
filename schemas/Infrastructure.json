@@ -1,0 +1,25 @@
+{
+    "KubernetesDeployment": {
+        "connector_id": "INT",
+        "image": "VARCHAR(100)",
+        "namespace": "VARCHAR(100)",
+        "port": "VARCHAR(100)",
+        "app": "VARCHAR(100)",
+        "include_autoScale": "VARCHAR(20)",
+        "include_service": "VARCHAR(20)",
+        "min_replicas": "VARCHAR(100)",
+        "max_replicas": "VARCHAR(100)",
+        "include_pv": "VARCHAR(100)",
+        "pv_storage_class": "VARCHAR(100)",
+        "pv_storage_path": "VARCHAR(100)",
+        "pv_mount_path": "VARCHAR(100)",
+        "storage_amount": "VARCHAR(100)",
+        "exist": "VARCHAR(10)"
+    },
+
+    "KubernetesDeploymentVarriable": {
+        "KubernetesDeployment": "VARCHAR(100)",
+        "name": "VARCHAR(100)",
+        "value": "VARCHAR(100)"
+    }
+}

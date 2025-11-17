@@ -1,0 +1,15 @@
+{
+    "Position": {
+        "project_id": "INT",
+        "service_id": "INT",
+        "x": "INT",
+        "y": "INT"
+    },
+
+    "ServicesConnection": {
+        "project_id": "INT",
+        "source_service_id": "INT",
+        "destination_service_id": "INT",
+        "endpoint_id": "INT"
+    }
+}

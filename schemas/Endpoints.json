@@ -1,0 +1,20 @@
+{
+    "Endpoint": {
+        "endpoint_type": "VARCHAR(100)",
+        "endpoint_id": "INT",
+        "service_id": "INT"
+    },
+
+    "Variable": {
+        "name": "VARCHAR(100)",
+        "type": "VARCHAR(100)",
+        "optional": "VARCHAR(100)",
+        "endpoint_id": "INT"
+    },
+
+    "RestApi": {
+        "name": "VARCHAR(100)",
+        "path": "VARCHAR(100)",
+        "method": "VARCHAR(20)"
+    }
+}

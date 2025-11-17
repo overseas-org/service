@@ -1,0 +1,3 @@
+
+class ArmExists(Exception):
+    pass

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-db
+  labels:
+    app: service-db
+    service: service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-db
+      service: service
+  template:
+    metadata:
+      labels:
+        app: service-db
+        service: service
+    spec:
+      volumes:
+      - name: service-db-volume
+        persistentVolumeClaim:
+          claimName: service-db
+      containers:
+      - name: service-db-container
+        image: mysql
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - mountPath: "/var/lib/mysql"
+          name: service-db-volume
+        env: 
+        - name: MYSQL_ROOT_PASSWORD
+          value: "rootpassword"

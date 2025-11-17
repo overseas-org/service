@@ -25,10 +25,10 @@ spec:
         - containerPort: 5000
         env: 
         - name: DB_HOST
-          value: "127.0.0.1"
+          value: "service-db"
         - name: DB_USER
           value: "root"
         - name: DB_PASSWORD
           value: "rootpassword"
         - name: DB_PORT
-          value: "3308"
+          value: "3306"

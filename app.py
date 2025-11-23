@@ -1,6 +1,6 @@
 
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 from flask_cors import CORS
 
 from mysql_database import Database
@@ -17,21 +17,24 @@ app = Flask(__name__)
 
 CORS(app, supports_credentials=True)
 
+bp = Blueprint('service', __name__,
+                        template_folder='templates')
 
-@app.route("/service", methods=["POST"])
+
+@bp.route("/service", methods=["POST"])
 def create_service():
 	data = request.json
 	service_id = service.create_service(data)
 	return jsonify({"service_id": service_id}), 200
 
-@app.route("/services", methods=["GET"])
+@bp.route("/services", methods=["GET"])
 def get_services():
 	filter = request.args.get("filter", "")
 	project_id = request.args.get("project_id")
 	services = service.get_services(project_id, filter)
 	return jsonify(services), 200
 
-@app.route("/service", methods=["GET"])
+@bp.route("/service", methods=["GET"])
 def get_service():
 	filter = request.args.get("filter", "")
 	# project_id = request.args.get("project_id")
@@ -39,7 +42,7 @@ def get_service():
 	_service = service.get_service(service_id)
 	return jsonify(_service), 200
 
-@app.route("/service", methods=["DELETE"])
+@bp.route("/service", methods=["DELETE"])
 def delete_service():
 	service_id = request.args.get("id")
 	service.delete_service(service_id)
@@ -48,7 +51,7 @@ def delete_service():
 
 ##########repo
 
-@app.route("/repo", methods=["GET"])
+@bp.route("/repo", methods=["GET"])
 def get_repo():
 	# project_id = request.args.get("project_id")
 	repo_id = request.args.get("repo_id")
@@ -57,7 +60,7 @@ def get_repo():
 	obj = db.get_object_by_id(repo_type, repo_id, as_dict=True)
 	return jsonify(obj), 200
 
-@app.route("/registry", methods=["GET"])
+@bp.route("/registry", methods=["GET"])
 def get_registry():
 	# project_id = request.args.get("project_id")
 	registry_id = request.args.get("registry_id")
@@ -66,7 +69,7 @@ def get_registry():
 	obj = db.get_object_by_id(registry_type, registry_id, as_dict=True)
 	return jsonify(obj), 200
 
-@app.route("/pipeline", methods=["GET"])
+@bp.route("/pipeline", methods=["GET"])
 def get_pipeline():
 	# project_id = request.args.get("project_id")
 	pipeline_id = request.args.get("pipeline_id")
@@ -75,7 +78,7 @@ def get_pipeline():
 	obj = db.get_object_by_id(pipeline_type, pipeline_id, as_dict=True)
 	return jsonify(obj), 200
 
-@app.route("/endpoints", methods=["GET"])
+@bp.route("/endpoints", methods=["GET"])
 def get_endpoints():
 	# project_id = request.args.get("project_id")
 	service_id = request.args.get("service_id")
@@ -89,19 +92,19 @@ def get_endpoints():
 
 ############ map
 
-@app.route("/positions", methods=["GET"])
+@bp.route("/positions", methods=["GET"])
 def get_project_positions():
 	project_id = request.args.get("project_id")
 	positions = get_position(project_id)
 	return jsonify(positions), 200
 
-@app.route("/positions", methods=["PUT"])
+@bp.route("/positions", methods=["PUT"])
 def update_project_positions():
 	data = request.json
 	update_positions(data["positions"])
 	return jsonify({"message": "postions saved"}), 201
 
-@app.route("/position", methods=["POST"])
+@bp.route("/position", methods=["POST"])
 def create_project_position():
 	data = request.json
 	project_id = data["project_id"]
@@ -109,17 +112,19 @@ def create_project_position():
 	create_positions(project_id, service_id)
 	return jsonify({"message": "postions saved"}), 201
 
-@app.route("/connection", methods=["POST"])
+@bp.route("/connection", methods=["POST"])
 def create_connection():
 	data = request.json
 	create_services_connection(data)
 	return jsonify({"message": "connection saved"}), 201
 
-@app.route("/connections", methods=["GET"])
+@bp.route("/connections", methods=["GET"])
 def get_connection():
 	project_id = request.args.get("project_id")
 	connections = get_projects_connection(project_id)
 	return jsonify(connections), 200
 
+app.register_blueprint(bp, url_prefix="/api/service")
+
 if __name__ == "__main__":
-	app.run(host="0.0.0.0", debug=True)
+	app.run(host="0.0.0.0", debug=True, port=5003)

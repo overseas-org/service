@@ -2,3 +2,4 @@ flask
 pytest
 flask_cors
 mysql-database
+requests

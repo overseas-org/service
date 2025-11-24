@@ -1,3 +1,3 @@
-connectors = "http://localhost:5001"
+connectors = "http://connection/api/connection"
 
 

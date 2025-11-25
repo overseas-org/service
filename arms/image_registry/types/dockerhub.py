@@ -1,3 +1,5 @@
+
+import logging
 import requests
 from mysql_database import Database
 from variables import db_creds
@@ -36,7 +38,7 @@ class Dockerhub:
 
         # Check response
         if response.status_code == 201:
-            print(f"Repository '{image}' created successfully!")
+            logging.info(f"Repository '{image}' created successfully!")
             self.url  = f"https://hub.docker.com/repository/docker/{self.connector["username"]}/{image}/general"
             self.update_url()
             update_existens("ImageRegistry", "Dockerhub", self.id)
@@ -46,7 +48,7 @@ class Dockerhub:
             update_existens("ImageRegistry", "Dockerhub", self.id, "true")
             raise ArmExists(f"Dockerhub repository {image} already exists")
         else:
-            print(f"Failed to create repository: {response.text}")
+            logging.info(f"Failed to create repository: {response.text}")
             update_existens("ImageRegistry", "Dockerhub", self.id, "false")
 
     def delete_image_registry(self):
@@ -62,10 +64,10 @@ class Dockerhub:
 
         # Check response
         if response.status_code == 202:
-            print(f"Repository '{image}' deleted successfully!")
+            logging.info(f"Repository '{image}' deleted successfully!")
             update_existens("ImageRegistry", "Dockerhub", self.id, "false")
         else:
-            print(f"Failed to delete repository: {response.text}")
+            logging.info(f"Failed to delete repository: {response.text}")
 
     
     def get_login_step(self):

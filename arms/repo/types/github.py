@@ -1,4 +1,4 @@
-import logging
+from logger import logger
 import requests
 import base64
 import time
@@ -35,10 +35,10 @@ class Github:
             # auth=(self.connector["username"], self.token)
         )
         if response.status_code == 204:
-            logging.info(f"successfully deleted github repository '{self.name}'")
+            logger.info(f"successfully deleted github repository '{self.name}'")
             update_existens("Repo", "Github", self.id, "false")
         else:
-            logging.info("Error:", response.json())
+            logger.info("Error:", response.json())
 
 
     def create_repo(self, description="", private=False):
@@ -70,7 +70,7 @@ class Github:
             raise ArmExists("Repository already exists on this account")
         else:
             update_existens("Repo", "Github", self.id, "false")
-            logging.info("Error:", response.json())
+            logger.info("Error:", response.json())
         return response
     
     def get_repo(self):
@@ -150,9 +150,9 @@ class Github:
         response = requests.put(url, json=data, headers=headers)
 
         if response.status_code in [200, 201]:
-            logging.info(f"Uploaded {file_path}")
+            logger.info(f"Uploaded {file_path}")
         else:
-            logging.info(f"Error uploading {file_path}: {response.text}")
+            logger.info(f"Error uploading {file_path}: {response.text}")
 
     def upload_folder(self, folder, parent_path=""):
         """Recursively uploads folder and its files to GitHub."""
@@ -189,10 +189,10 @@ class Github:
         response = requests.post(url, json=data, headers=headers)
         
         if response.status_code in [200, 201]:
-            logging.info("Webhook added successfully!")
+            logger.info("Webhook added successfully!")
             return response.json()
         else:
-            logging.info(f"Failed to add webhook: {response.text}")
+            logger.info(f"Failed to add webhook: {response.text}")
             return None
 
 

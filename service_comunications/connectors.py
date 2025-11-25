@@ -1,4 +1,4 @@
-import logging
+from logger import logger
 import json
 import requests
 

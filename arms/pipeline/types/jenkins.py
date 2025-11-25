@@ -1,4 +1,4 @@
-import logging
+from logger import logger
 import requests
 import json
 import base64
@@ -7,7 +7,7 @@ from arms.pipeline.jenkins.objects.credentials.SecretFile import SecretFile
 from service_comunications.connectors import get_connector
 from mysql_database import Database
 from variables import db_creds
-import logging
+from logger import logger
 from service.get_service import get_container_service
 from arms.arm import get_arm
 #redo
@@ -87,16 +87,16 @@ class Jenkins:
         if crumb_response.status_code == 200:
             headers["Jenkins-Crumb"] = crumb_response.json()["crumb"]
         else:
-            logging.info("failed")
+            logger.info("failed")
 
         # Send request to create the pipeline job
         response = requests.post(create_url, headers=headers, data=payload, auth=auth)
 
         # Output response
         if response.status_code == 200:
-            logging.info(f"Pipeline '{pipeline_name}' created successfully!")
+            logger.info(f"Pipeline '{pipeline_name}' created successfully!")
         else:
-            logging.info(f"Failed to create pipeline: {response.status_code}, {response.text}")
+            logger.info(f"Failed to create pipeline: {response.status_code}, {response.text}")
     
     def create_pipeline(self, service_id):
         service = get_container_service(service_id)
@@ -127,7 +127,7 @@ class Jenkins:
 
 
     def create_folder(self, folder_name):
-        logging.info("creating folder")
+        logger.info("creating folder")
         url = f"{self.connector['host']}/view/all/createItem"
 
 
@@ -148,7 +148,7 @@ class Jenkins:
         
         response = requests.post(url, headers=headers, data=data, auth=auth)
 
-        logging.info(response.status_code)
+        logger.info(response.status_code)
 
 
     def install_jenkins_plugin(self, plugin_name):
@@ -161,9 +161,9 @@ class Jenkins:
                                 headers=headers, data=xml_data)
 
         if response.status_code == 200:
-            logging.info(f"✅ Plugin '{plugin_name}' is being installed. Restart Jenkins if required.")
+            logger.info(f"✅ Plugin '{plugin_name}' is being installed. Restart Jenkins if required.")
         else:
-            logging.info(f"❌ Failed to install plugin '{plugin_name}': {response.text}")
+            logger.info(f"❌ Failed to install plugin '{plugin_name}': {response.text}")
 
 
 
@@ -198,19 +198,19 @@ class Jenkins:
         if crumb_response.status_code == 200:
             headers["Jenkins-Crumb"] = crumb_response.json()["crumb"]
         else:
-            logging.info("failed")
+            logger.info("failed")
 
         # Send request to create the pipeline job
         response = requests.post(url, headers=headers, data=payload, auth=auth)
 
         # Output response
         if response.status_code == 200:
-            logging.info(f"user creds created successfully!")
+            logger.info(f"user creds created successfully!")
         else:
-            logging.info(f"Failed to create user creds: {response.status_code}, {response.text}")
+            logger.info(f"Failed to create user creds: {response.status_code}, {response.text}")
 
-        logging.info(response.status_code)
-        logging.info(response.text)
+        logger.info(response.status_code)
+        logger.info(response.text)
 
     def create_secret_text_cred(self, credential, folder=""):
         pass
@@ -250,19 +250,19 @@ class Jenkins:
         if crumb_response.status_code == 200:
             headers["Jenkins-Crumb"] = crumb_response.json()["crumb"]
         else:
-            logging.info("failed")
+            logger.info("failed")
 
         # Send request to create the pipeline job
         response = requests.post(url, headers=headers, data=payload, auth=auth)
 
         # Output response
         if response.status_code == 200:
-            logging.info(f"github app credentials created successfully!")
+            logger.info(f"github app credentials created successfully!")
         else:
-            logging.info(f"Failed to create github app credentials: {response.status_code}, {response.text}")
+            logger.info(f"Failed to create github app credentials: {response.status_code}, {response.text}")
 
-        logging.info(response.status_code)
-        logging.info(response.text)
+        logger.info(response.status_code)
+        logger.info(response.text)
 
     def create_secret_file(self, credential, folder=""):
         if folder:
@@ -298,19 +298,19 @@ class Jenkins:
         if crumb_response.status_code == 200:
             headers["Jenkins-Crumb"] = crumb_response.json()['crumb']
         else:
-            logging.info("failed")
+            logger.info("failed")
 
         # Send request to create the pipeline job
         response = requests.post(url, headers=headers, data=payload, auth=auth)
 
         # Output response
         if response.status_code == 200:
-            logging.info(f"secret file '{credential.file.name}' created successfully!")
+            logger.info(f"secret file '{credential.file.name}' created successfully!")
         else:
-            logging.info(f"Failed to create secret file '{credential.file.name}': {response.status_code}, {response.text}")
+            logger.info(f"Failed to create secret file '{credential.file.name}': {response.status_code}, {response.text}")
 
-        logging.info(response.status_code)
-        logging.info(response.text)
+        logger.info(response.status_code)
+        logger.info(response.text)
 
     def trigger_pipeline(self):
         folder = f"/{self.folder}".replace("/", "/job/")
@@ -326,11 +326,11 @@ class Jenkins:
         if crumb_response.status_code == 200:
             headers["Jenkins-Crumb"] = crumb_response.json()["crumb"]
         else:
-            logging.info("failed")
+            logger.info("failed")
         
         response = requests.post(url, headers=headers, auth=auth)
 
-        logging.info(response.status_code)
+        logger.info(response.status_code)
 
 
 
@@ -351,16 +351,16 @@ class Jenkins:
         if crumb_response.status_code == 200:
             headers["Jenkins-Crumb"] = crumb_response.json()["crumb"]
         else:
-            logging.info("failed")
+            logger.info("failed")
 
         # Send request to create the pipeline job
         response = requests.post(delete_url, headers=headers, auth=auth)
 
         # Output response
         if response.status_code == 200:
-            logging.info(f"Pipeline '{self.name}' deleted successfully!")
+            logger.info(f"Pipeline '{self.name}' deleted successfully!")
         else:
-            logging.info(f"Failed to delete pipeline: {response.status_code}, {response.text}")
+            logger.info(f"Failed to delete pipeline: {response.status_code}, {response.text}")
     
     def update_url(self):
         db = Database("Pipeline", db_creds)

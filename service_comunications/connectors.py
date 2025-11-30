@@ -9,7 +9,7 @@ def get_connector(connector_id):
     if response.status_code == 200:
         return response.json()
     else:
-        logging.error(response.text)
+        logger.error(response.text)
 
 def get_file_from_connector(connector_id, filename):
     headers = {
@@ -19,4 +19,4 @@ def get_file_from_connector(connector_id, filename):
     if response.status_code == 200:
         return response.json()
     else:
-        logging.error(response.text)
+        logger.error(response.text)

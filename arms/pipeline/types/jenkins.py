@@ -140,7 +140,7 @@ class Jenkins:
         if crumb_response.status_code == 200:
             headers["Jenkins-Crumb"] = crumb_response.json()["crumb"]
         else:
-            logging.error("failed to create folder")
+            logger.error("failed to create folder")
         data = {
             "name": folder_name,
             "mode": "com.cloudbees.hudson.plugins.folder.Folder",

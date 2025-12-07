@@ -1,3 +1,4 @@
-connectors = "http://connection:5000/api/connection"
+connectors = "http://overseas.com/api/connection"
+progress = "http://overseas.com/api/progress"
 
 

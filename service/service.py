@@ -3,6 +3,7 @@ from mysql_database import Database
 from variables import db_creds
 from utils import decapatlize
 
+
 def create_service(service_info):
     db = Database("Service", db_creds)
     service_type = service_info.pop("service_type")
@@ -11,13 +12,13 @@ def create_service(service_info):
                                            "service_type": service_type,
                                            "version": service_info["version"]})
     # try:
-    instance_service_id = get_service_class(service_type).create_service(service_id, service_info)
-    db.update_object("Service", service_id, {"service_type": service_type,
-                                            "service_id": instance_service_id,})
+    task_id = get_service_class(service_type).create_service(service_id, service_info)
+    # db.update_object("Service", service_id, {"service_type": service_type,
+    #                                         "service_id": instance_service_id,})
     # except Exception as e:
     #     print(e)
     #     db.delete_object("Service", service_id)
-    return service_id
+    return task_id
 
 def delete_service(service_id):
     db = Database("Service", db_creds)

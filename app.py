@@ -24,8 +24,8 @@ bp = Blueprint('service', __name__,
 @bp.route("/service", methods=["POST"])
 def create_service():
 	data = request.json
-	service_id = service.create_service(data)
-	return jsonify({"service_id": service_id}), 200
+	task_id = service.create_service(data)
+	return jsonify({"task_id": task_id}), 200
 
 @bp.route("/services", methods=["GET"])
 def get_services():

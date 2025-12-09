@@ -37,8 +37,13 @@ def get_services(project_id, filter):
                                              as_dict=True, conditions={"project_id": project_id})
 	return services
 
-def get_service(service_id):
+def get_service(service_id, as_dict=True):
     db = Database("Service", db_creds)
     service = db.get_object_by_id("Service", service_id)
-    service = db.get_object_by_id(service.service_type, service.id, as_dict=True)
+    service = db.get_object_by_id(service.service_type, service.id, as_dict=as_dict)
     return service
+
+def configure_service_connections(service_id, service_connections):
+    db = Database("Service", db_creds)
+    service = db.get_object_by_id("Service", service_id)
+    get_service_class(service.service_type)(service.service_id).redefine_services_connections(service_connections)

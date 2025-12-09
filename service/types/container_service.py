@@ -1,6 +1,6 @@
 from arms.repo.repo import create_repo, delete_repo, add_webhook
 from arms.image_registry.image_registry import create_image_registry, get_image, delete_image_registry
-from arms.infrastructure.infrastructure import create_infrastructure, delete_infrastructure
+from arms.infrastructure.infrastructure import create_infrastructure, delete_infrastructure, redefine_network_security
 from arms.pipeline.pipeline import create_pipeline, trigger_pipeline, delete_pipeline, get_pipeline_host
 from arms.endpoints.endpoints import create_endpoints, delete_endpoints
 from arms.framework.framework import create_framework
@@ -11,6 +11,13 @@ from variables import db_creds
 from service_comunications.progress import create_task, finish_step, start_step, start_task
 
 class ContainerService:
+
+    def __init__(self, container_service_id):
+        db = Database("Service", db_creds)
+        info = db.get_object_by_id("ContainerService", container_service_id, as_dict=True)
+        for key, value in info.items():
+            setattr(self, key, value)
+        
 
     @classmethod
     def create_service(cls, parent_id, service_info):
@@ -190,3 +197,7 @@ class ContainerService:
         })
         start_task(task_id)
         return task_id
+
+    def redefine_services_connections(self, services_connections):
+        redefine_network_security(self.service_name, services_connections, self.infrastructure_type, self.infrastructure_id, repo_type=self.repo_type, repo_id=self.repo_id, service_id=self.id)
+

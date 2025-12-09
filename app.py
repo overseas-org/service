@@ -48,6 +48,13 @@ def delete_service():
 	service.delete_service(service_id)
 	return jsonify({"message": f"successfully deleted service with id:{service_id}"}), 204
 
+@bp.route("/configure_service_connections", methods=["POST"])
+def configure_service_connections():
+	service_id = request.args.get("id")
+	data = request.json
+	service.configure_service_connections(service_id, data["connections"])
+	return jsonify({"message": f"successfully updated service security network"}), 200
+
 
 ##########repo
 

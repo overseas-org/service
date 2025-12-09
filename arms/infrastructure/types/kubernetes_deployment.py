@@ -9,6 +9,7 @@ from mysql_database import Database
 from variables import db_creds
 from arms.arm import get_arm
 from service_comunications.connectors import get_file_from_connector
+from service.service import get_service
 
 class KubernetesDeployment:
 
@@ -27,7 +28,7 @@ class KubernetesDeployment:
         self.max_replicas = deployment.max_replicas
         self.include_pv = deployment.include_pv
         self.pv_storage_class = deployment.pv_storage_class
-        self.pv_storage_path = deployment.pv_storage_path
+        self.pv_storage_path = deployment.pv_storage_path # not being used
         self.pv_mount_path = deployment.pv_mount_path
         self.storage_amount = deployment.storage_amount
 
@@ -46,11 +47,11 @@ class KubernetesDeployment:
     def get_yamls(self, service_name):
         folder = Folder(f"{self.app}-deplyment")
         files = [File("deployment.yaml")]
-        if self.include_autoScale:
+        if self.include_autoScale == "true":
             files.append(File("hpa.yaml"))
-        if self.include_service:
+        if self.include_service == "true":
             files.append(File("service.yaml"))
-        if self.include_pv:
+        if self.include_pv == "true":
             files.append(File("pv.yaml"))
             files.append(File("pvc.yaml"))
         folder.files = files
@@ -59,7 +60,7 @@ class KubernetesDeployment:
                 file.content = f.read()
                 if file.name == "pv.yaml":
                     if self.pv_storage_class == "local-path":
-                        file.content += f"\n  hostPath:\n    path: \"/data/dbs-local-storage/service\"\n"
+                        file.content += f"\n  hostPath:\n    path: \"/data/dbs-local-storage/{self.app.lower().replace("_", "-")}\"\n"
         for file in folder.files:
             template = Template(file.content)
             paremeters = {
@@ -113,7 +114,7 @@ class KubernetesDeployment:
             os.remove(temp_kubeconfig_path)
 
     def get_volume(self):
-        if not self.include_pv:
+        if not self.include_pv == "true":
             return ""
         return f"""volumes:
       - name: {self.app}-volume
@@ -121,8 +122,51 @@ class KubernetesDeployment:
           claimName: {self.app}"""
     
     def get_volume_mount(self):
-        if not self.include_pv:
+        if not self.include_pv == "true":
             return ""
         return f"""volumeMounts:
         - mountPath: "{self.pv_mount_path}"
           name: {self.app}-volume"""
+    
+    def redefine_network_security(self, service_name, service_connections, repo_type, repo_id, service_id):
+        allowed_service_accounts = []
+        for service_connection in service_connections:
+            if service_connection["destination_service_id"] == service_id:
+                service_connection_obj = get_service(service_connection["source_service_id"], as_dict=False)
+                if service_connection_obj.infrastructure_type == "KubernetesDeployment":
+                    # make sure service account exists for the source service or maybe assume it is  
+                    # KubernetesDeployment(service_connection_obj.infrastructure_id).add_service_account
+                    allowed_service_accounts.append({
+                                "namespace": get_arm("infrastructure", service_connection_obj.infrastructure_type, service_connection_obj.infrastructure_id).namespace,
+                                "name": service_connection_obj.service_name,
+                                "type": "KubernetesDeployment"
+                            })
+        if allowed_service_accounts:
+            file = self.add_istio_authorization_policy(service_name, allowed_service_accounts)
+            infrastructure_folder = Folder("infrastructure")
+            infrastructure_folder.add_page(file)
+
+            repo = get_arm("repo", repo_type, repo_id)
+            repo.upload_folder(infrastructure_folder)
+    
+    def add_istio_authorization_policy(self, service_name, allowed_service_accounts):
+        yaml = ""
+        with open(f"arms/infrastructure/types/kubernetes/yaml_templates/KubernetesDeployment/istio_authorization_policy.yaml", "r") as f:
+            yaml = f.read()
+        template = Template(yaml)
+        paremeters = {
+            "app": self.app,
+            "name": self.app.lower().replace("_", "-"),
+            "service_name": service_name.lower(),
+            "service_accounts": self.get_service_accounts_istio_authorization_policy(allowed_service_accounts)
+        }
+        yaml = template.render(paremeters)
+        return File("istio_authorization_policy.yaml", yaml)
+
+    def get_service_accounts_istio_authorization_policy(self, allowed_service_accounts):
+        service_accounts = ""
+        for sa in allowed_service_accounts:
+            if sa["type"] == "KubernetesDeployment":
+                service_accounts += f"\n        - cluster.local/ns/{sa["namespace"]}/sa/{sa["name"]}"
+        return service_accounts
+    

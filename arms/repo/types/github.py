@@ -70,7 +70,8 @@ class Github:
             raise ArmExists("Repository already exists on this account")
         else:
             update_existens("Repo", "Github", self.id, "false")
-            logger.info("Error:", response.json())
+            logger.error(f"error while creaing repo {response.json()}")
+            raise Exception(f"error while creaing repo {response.json()}")
         return response
     
     def get_repo(self):

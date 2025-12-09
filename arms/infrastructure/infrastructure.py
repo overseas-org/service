@@ -1,6 +1,6 @@
 
 
-from arms.arm import create_service_arm, delete_service_arm
+from arms.arm import create_service_arm, delete_service_arm, get_arm
 from mysql_database import Database
 from variables import db_creds
 
@@ -35,3 +35,8 @@ def create_infrastructure(info, service_name, app, image, **args):
 def delete_infrastructure(infrastructure_type, infrastructure_id):
     delete_service_arm("infrastructure", infrastructure_type, infrastructure_id)
     delete_from_db(infrastructure_type, infrastructure_id)
+
+
+def redefine_network_security(service_name, services_connections, infrastructure_type, infrastructure_id, **args):
+    infra = get_arm("infrastructure", infrastructure_type, infrastructure_id)
+    return infra.redefine_network_security(service_name, services_connections, **args)

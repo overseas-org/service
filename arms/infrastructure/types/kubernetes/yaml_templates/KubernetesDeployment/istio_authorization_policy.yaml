@@ -1,0 +1,15 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ app }}
+      service: {{ service_name }}
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals: {{ service_accounts }}
+        

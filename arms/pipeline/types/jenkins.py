@@ -96,7 +96,7 @@ class Jenkins:
         if response.status_code == 200:
             logger.info(f"Pipeline '{pipeline_name}' created successfully!")
         else:
-            logger.info(f"Failed to create pipeline: {response.status_code}, {response.text}")
+            raise Exception(f"Failed to create pipeline: {response.status_code}, {response.text}")
     
     def create_pipeline(self, service_id):
         service = get_container_service(service_id)

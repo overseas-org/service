@@ -19,6 +19,3 @@ def get_projects_connection(project_id):
     db = Database("Map", db_creds)
     connections = db.get_list_of_objects("ServicesConnection", {"project_id": project_id}, as_dict=True)
     return connections
-
-def new_func():
-    return None

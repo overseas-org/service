@@ -23,8 +23,8 @@ def create_service(service_info):
 def delete_service(service_id):
     db = Database("Service", db_creds)
     service = db.get_object_by_id("Service", service_id)
-    get_service_class(service.service_type).delete_service(service.service_id)
-    db.delete_object("Service", service_id)
+    task_id = get_service_class(service.service_type).delete_service(service.service_id)
+    return task_id
 
 def get_service_class(service_type):
     service_type_module = importlib.import_module(f"service.types.{decapatlize(service_type)}")

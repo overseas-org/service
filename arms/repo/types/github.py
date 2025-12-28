@@ -155,6 +155,31 @@ class Github:
         else:
             logger.info(f"Error uploading {file_path}: {response.text}")
 
+    def delete_file(self, file_path, commit_message="Delete file via API"):
+        """Deletes a single file to GitHub via API."""
+        if self.connector["organization"]:
+            url = f"https://api.github.com/repos/{self.connector['organization']}/{self.name}/contents/{file_path}"
+        else:
+            url = f"https://api.github.com/repos/{self.connector['account']}/{self.name}/contents/{file_path}"
+        
+        
+        # Check if file already exists (GitHub requires SHA for updates)
+        response = requests.get(url, headers={"Authorization": f"token {self.token}"})
+        sha = response.json().get("sha") if response.status_code == 200 else None
+
+        data = {
+            "message": commit_message,
+            "sha": sha  # Required if updating an existing file
+        }
+
+        headers = {"Authorization": f"token {self.token}"}
+        response = requests.delete(url, json=data, headers=headers)
+
+        if response.status_code in [200, 201]:
+            logger.info(f"Deleated {file_path}")
+        else:
+            logger.info(f"Error deleting {file_path}: {response.text}")
+
     def upload_folder(self, folder, parent_path=""):
         """Recursively uploads folder and its files to GitHub."""
         if parent_path == "":

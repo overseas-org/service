@@ -7,7 +7,7 @@ from mysql_database import Database
 from variables import db_creds
 from serviceMap.positions import get_position
 from serviceMap.positions import get_position, update_positions, create_positions
-from serviceMap.service_connection import create_services_connection, get_projects_connection
+from serviceMap.service_connection import create_services_connection, get_projects_connection, delete_services_connection, get_connection
 
 import service.service as service
 
@@ -45,8 +45,8 @@ def get_service():
 @bp.route("/service", methods=["DELETE"])
 def delete_service():
 	service_id = request.args.get("id")
-	service.delete_service(service_id)
-	return jsonify({"message": f"successfully deleted service with id:{service_id}"}), 204
+	task_id = service.delete_service(service_id)
+	return jsonify({"task_id": task_id}), 200
 
 @bp.route("/configure_service_connections", methods=["POST"])
 def configure_service_connections():
@@ -121,12 +121,19 @@ def create_project_position():
 
 @bp.route("/connection", methods=["POST"])
 def create_connection():
-	data = request.json
-	create_services_connection(data)
-	return jsonify({"message": "connection saved"}), 201
+	connection = request.json
+	connection_id = create_services_connection(connection)
+	connection = get_connection(connection_id)
+	return jsonify(connection), 201
+
+@bp.route("/connection", methods=["DELETE"])
+def delete_connection():
+	connection_id = request.args.get("connection_id")
+	delete_services_connection(connection_id)
+	return jsonify({"message": "connection saved"}), 204
 
 @bp.route("/connections", methods=["GET"])
-def get_connection():
+def get_connections():
 	project_id = request.args.get("project_id")
 	connections = get_projects_connection(project_id)
 	return jsonify(connections), 200

@@ -25,6 +25,16 @@ class ContainerService:
         p = Process(target=cls.create_service_action, args=(parent_id, service_info, task_id))
         p.start()
         return task_id
+    
+    @classmethod
+    def delete_service(cls, parent_id):
+        db = Database("Service", db_creds)
+        service = db.get_object_by_id("Service", parent_id)
+        service = db.get_object_by_id("ContainerService", service.id)
+        task_id = cls.create_service_deletion_task(service)
+        p = Process(target=cls.delete_service_action, args=(service.id, parent_id, task_id))
+        p.start()
+        return task_id
 
     @classmethod
     def create_service_action(cls, parent_id, service_info, task_id):
@@ -127,36 +137,59 @@ class ContainerService:
         return task_id
     
     @classmethod
-    def delete_service(cls, service_id):
+    def delete_service_action(cls, service_id, parent_id, task_id):
         db = Database("Service", db_creds)
         service = db.get_object_by_id("ContainerService", service_id)
         if not service:
             return
         if service.repo_type and service.repo_id:
-            delete_repo(service.repo_type, service.repo_id)
-            db.delete_object_attributes("ContainerService", service_id, ["repo_type",
-                                                                        "repo_id"])
+            try:
+                start_step(task_id, "deleteRepo")
+                delete_repo(service.repo_type, service.repo_id)
+                db.delete_object_attributes("ContainerService", service_id, ["repo_type",
+                                                                            "repo_id"])
+                finish_step(task_id, "deleteRepo")
+            except:
+                finish_step(task_id, "deleteRepo", False)
         if service.image_registry_type and service.image_registry_id:
-            delete_image_registry(service.image_registry_type, service.image_registry_id)
-            db.delete_object_attributes("ContainerService", service_id, ["image_registry_type",
-                                                                        "image_registry_id"])
+            try:
+                start_step(task_id, "deleteImageRepo")
+                delete_image_registry(service.image_registry_type, service.image_registry_id)
+                db.delete_object_attributes("ContainerService", service_id, ["image_registry_type",
+                                                                            "image_registry_id"])
+                finish_step(task_id, "deleteImageRepo")
+            except:
+                finish_step(task_id, "deleteImageRepo", False)
         if service.infrastructure_type and service.infrastructure_id:
-            delete_infrastructure(service.infrastructure_type, service.infrastructure_id)
-            db.delete_object_attributes("ContainerService", service_id, ["infrastructure_type",
-                                                                        "infrastructure_id"])
+            try:
+                start_step(task_id, "deleteInfastructure")
+                delete_infrastructure(service.infrastructure_type, service.infrastructure_id)
+                db.delete_object_attributes("ContainerService", service_id, ["infrastructure_type",
+                                                                            "infrastructure_id"])
+                finish_step(task_id, "deleteInfastructure")
+            except:
+                finish_step(task_id, "deleteInfastructure", False)
         if service.pipeline_type and service.pipeline_id:
-            delete_pipeline(service.pipeline_type, service.pipeline_id)
-            db.delete_object_attributes("ContainerService", service_id, ["pipeline_type",
-                                                                        "pipeline_id"])
+            try:
+                start_step(task_id, "deletePipeline")
+                delete_pipeline(service.pipeline_type, service.pipeline_id)
+                db.delete_object_attributes("ContainerService", service_id, ["pipeline_type",
+                                                                            "pipeline_id"])
+                finish_step(task_id, "deletePipeline")
+            except:
+                finish_step(task_id, "deletePipeline", False)
         # if service.db_id:
         #     delete_db(service.db)
         #     db.delete_object_attribute("ContainerService", service_id, "db_id")
         delete_endpoints(service_id)
         db.delete_object("ContainerService", service_id)
+        db.delete_object("Service", parent_id)
+        
 
     @classmethod
     def create_service_creation_task(cls, service_info):
         task_steps = []
+
         if "repo" in service_info and service_info["repo"]:
             task_steps.append({
                     "name": "createRepo",
@@ -190,6 +223,38 @@ class ContainerService:
         task_steps.append({
                     "name": "runningPipeline",
                     "description": "running Pipeline"
+                })
+        task_id = create_task({
+            "name": "createService",
+            "steps": task_steps
+        })
+        start_task(task_id)
+        return task_id
+
+    @classmethod
+    def create_service_deletion_task(cls, service):
+        task_steps = []
+        if not service:
+            return
+        if service.repo_type and service.repo_id:
+            task_steps.append({
+                    "name": "deleteRepo",
+                    "description": "Deleting code repository"
+                })
+        if service.image_registry_type and service.image_registry_id:
+            task_steps.append({
+                    "name": "deleteImageRepo",
+                    "description": "Deleting image repository"
+                })
+        if service.infrastructure_type and service.infrastructure_id:
+            task_steps.append({
+                    "name": "deleteInfastructure",
+                    "description": "Deleting infastructure"
+                })
+        if service.pipeline_type and service.pipeline_id:
+            task_steps.append({
+                    "name": "deletePipeline",
+                    "description": "Deleting pipeline"
                 })
         task_id = create_task({
             "name": "createService",

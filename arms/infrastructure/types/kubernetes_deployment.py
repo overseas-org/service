@@ -148,6 +148,9 @@ class KubernetesDeployment:
 
             repo = get_arm("repo", repo_type, repo_id)
             repo.upload_folder(infrastructure_folder)
+        else:
+            repo = get_arm("repo", repo_type, repo_id)
+            repo.delete_file("infrastructure/istio_authorization_policy.yaml")
     
     def add_istio_authorization_policy(self, service_name, allowed_service_accounts):
         yaml = ""

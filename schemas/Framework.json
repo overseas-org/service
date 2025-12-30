@@ -2,5 +2,19 @@
 {
     "Flask": {
         
+    },
+    "Springboot": {
+        "type": "VARCHAR(100)",
+        "language": "VARCHAR(100)",
+        "bootVersion": "VARCHAR(20)",
+        "groupId": "VARCHAR(100)",
+        "artifactId": "VARCHAR(100)",
+        "name": "VARCHAR(100)",
+        "description": "VARCHAR(200)",
+        "packageName": "VARCHAR(100)",
+        "packaging": "VARCHAR(4)",
+        "javaVersion": "VARCHAR(10)",
+        "configurationFileFormat": "VARCHAR(20)",
+        "dependencies": "VARCHAR(200)"
     }
 }

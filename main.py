@@ -3,20 +3,22 @@
 
 import service.service as service
 
+name = "greet"
+
 def create_service():
     data = {
-        "name": "greet",
+        "name": f"${name}",
         "project": 1,
         "service_type": "ContainerService",
         "version": 1,
         "repo": {
-            "name": "greet",
+            "name": f"${name}",
             "connector_id": 1,
             "repo_type": "Github"
         },
         "image_registry": {
             "image_registry_type": "Dockerhub",
-            "image_name": "greet",
+            "image_name": f"${name}",
             "connector_id": 4
         },
         "image_type": "docker",
@@ -31,7 +33,7 @@ def create_service():
             "max_replicas": "2",
             "include_pv": "true",
             "pv_storage_class": "local-path",
-            "pv_storage_path": "/data/dbs-local-storage/greet",
+            "pv_storage_path": f"/data/dbs-local-storage/${name}",
             "storage_amount": "1Gi",
             "variables": [
                 {
@@ -44,7 +46,7 @@ def create_service():
             "pipeline_type": "Jenkins",
             "connector_id": 14,
             "folder": "new-test",
-            "name": "greet"
+            "name": f"${name}"
         },
         "endpoints": [
             {
@@ -61,9 +63,9 @@ def create_service():
                 ]
             }
         ],
-        "language": "python",
+        "language": "java", #spring
         "framework": {
-            "framework_type": "Flask"
+            "framework_type": "springboot" #spring
         },
         "db": {
             "db_type": "KubernetesDeployment",
@@ -74,7 +76,7 @@ def create_service():
             "max_replicas": "2",
             "include_pv": "true",
             "pv_storage_class": "local-path",
-            "pv_storage_path": "/data/dbs-local-storage/greet",
+            "pv_storage_path": f"/data/dbs-local-storage/${name}",
             "pv_mount_path": "/var/lib/mysql",
             "storage_amount": "1Gi"
         }

@@ -6,7 +6,7 @@ from flask_cors import CORS
 from mysql_database import Database
 from variables import db_creds
 from serviceMap.positions import get_position
-from serviceMap.positions import get_position, update_positions, create_positions
+from serviceMap.positions import get_position, update_positions, create_position
 from serviceMap.service_connection import create_services_connection, get_projects_connection, delete_services_connection, get_connection
 
 import service.service as service
@@ -116,8 +116,8 @@ def create_project_position():
 	data = request.json
 	project_id = data["project_id"]
 	service_id = data["service_id"]
-	create_positions(project_id, service_id)
-	return jsonify({"message": "postions saved"}), 201
+	position_id = create_position(project_id, service_id)
+	return jsonify({"position_id": position_id}), 201
 
 @bp.route("/connection", methods=["POST"])
 def create_connection():

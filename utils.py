@@ -1,13 +1,11 @@
 import re
+from pathlib import Path
 
 class Folder:
     def __init__(self, name):
         self.name = name
         self.files = []
         self.folders = []
-
-    def add_page(self, page):
-        self.files.append(page)
 
     def add_pages(self, pages):
         self.files.extend(pages)
@@ -17,6 +15,27 @@ class Folder:
 
     def add_folders(self, folders):
         self.folders.extend(folders)
+
+    def add_page(self, page):
+        path = page.name
+        content = page.content
+        current_folder = self
+        for folder in path.split("/")[:-1]:
+            if folder not in [f.name for f in current_folder.folders]:
+                new_folder = Folder(folder)
+                current_folder.add_folder(new_folder)
+                current_folder = new_folder
+            else:
+                current_folder = current_folder.get_folder(folder)
+        if (path if "/" not in path else path.split("/")[-1]) == "":
+            return
+        current_folder.files.append(File(path if "/" not in path else path.split("/")[-1], content))
+
+
+    def get_folder(self, name):
+        for folder in self.folders:
+            if folder.name == name:
+                return folder
 
 
 class File:

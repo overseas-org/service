@@ -28,11 +28,12 @@ def update_positions(positiotns):
         
         db.update_object("Position", position_id ,position)
 
-def create_positions(project_id, service_id):
+def create_position(project_id, service_id):
 
     db = Database("Map", db_creds)
     
-    db.add_object("Position" , {"project_id": project_id,
+    position_id = db.add_object("Position" , {"project_id": project_id,
                                 "service_id": service_id,
                                 "x": 100,
                                 "y": 100})
+    return position_id

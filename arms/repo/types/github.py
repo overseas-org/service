@@ -9,6 +9,7 @@ from variables import db_creds
 from service_comunications.connectors import get_connector
 from arms.arm import update_existens
 from arms.errors import ArmExists
+from utils import File, Folder
 
 
 class Github:
@@ -123,8 +124,10 @@ class Github:
         
     def upload_files(self, files):
         for file in files:
-            if file:
+            if isinstance(file, File):
                 self.upload_file(file.name, file.content)
+            elif isinstance(file, Folder):
+                self.upload_folder(file)
 
     
     def upload_file(self, file_path, content, commit_message="Add file via API"):

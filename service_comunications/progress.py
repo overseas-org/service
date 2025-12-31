@@ -10,8 +10,8 @@ def create_task(data):
             return response.json()["task_id"]
         else:
             logger.error(response.text)
-    except:
-        logger.error(response.text)
+    except Exception as e:
+        logger.error(e)
 
 
 def start_task(task_id):
@@ -21,8 +21,8 @@ def start_task(task_id):
             return response.json()
         else:
             logger.error(response.text)
-    except:
-        logger.error(response.text)
+    except Exception as e:
+        logger.error(e)
 
 def get_task(task_id):
     try:
@@ -31,8 +31,8 @@ def get_task(task_id):
             return response.json()
         else:
             logger.error(response.text)
-    except:
-        logger.error(response.text)
+    except Exception as e:
+        logger.error(e)
 
 def finish_step(task_id, step_name, succeess=True):
     try:
@@ -44,8 +44,8 @@ def finish_step(task_id, step_name, succeess=True):
             return response.json()
         else:
             logger.error(response.text)
-    except:
-        logger.error(response.text)
+    except Exception as e:
+        logger.error(e)
 
 def start_step(task_id, step_name):
     try:
@@ -56,7 +56,7 @@ def start_step(task_id, step_name):
             return response.json()
         else:
             logger.error(response.text)
-    except:
-        logger.error(response.text)
+    except Exception as e:
+        logger.error(e)
 
 

@@ -88,7 +88,6 @@ def get_pipeline():
 
 @bp.route("/endpoints", methods=["GET"])
 def get_endpoints():
-	# project_id = request.args.get("project_id")
 	service_id = request.args.get("service_id")
 	results = get_service_endpoints(service_id)
 

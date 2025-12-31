@@ -1,6 +1,6 @@
 from utils import Folder, File
 from arms.arm import get_arm
-from arms.endpoints.endpoints import get_endpoints
+from arms.endpoints.endpoints import get_service_endpoints
 import requests
 import zipfile
 import io
@@ -20,7 +20,7 @@ class Springboot:
         repo.upload_files(files)
         
     def get_files(self, service_id):
-        # endpoints = get_endpoints(service_id)
+        # endpoints = get_service_endpoints(service_id)
         files = []
         start_boot_folder = self.generate_start_boot_files("demo")
         files.extend(start_boot_folder.folders)

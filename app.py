@@ -8,6 +8,7 @@ from variables import db_creds
 from serviceMap.positions import get_position
 from serviceMap.positions import get_position, update_positions, create_position
 from serviceMap.service_connection import create_services_connection, get_projects_connection, delete_services_connection, get_connection
+from arms.endpoints.endpoints import get_service_endpoints
 
 import service.service as service
 
@@ -89,11 +90,12 @@ def get_pipeline():
 def get_endpoints():
 	# project_id = request.args.get("project_id")
 	service_id = request.args.get("service_id")
-	db = Database("Endpoints", db_creds)
-	endpoints = db.get_list_of_objects("Endpoint", {"service_id": service_id})
-	results = []
-	for endpoint in endpoints:
-		results.append(db.get_object_by_id(endpoint.endpoint_type, endpoint.endpoint_id, as_dict=True))
+	# db = Database("Endpoints", db_creds)
+	# endpoints = db.get_list_of_objects("Endpoint", {"service_id": service_id})
+	# results = []
+	# for endpoint in endpoints:
+	# 	results.append(db.get_object_by_id(endpoint.endpoint_type, endpoint.endpoint_id, as_dict=True))
+	results = get_service_endpoints(service_id)
 
 	return jsonify(results), 200
 

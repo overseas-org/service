@@ -16,7 +16,7 @@ def create_endpoints(service_id, endpoints):
         })
         create_endpoint_variables(endpoint_id, variables)
 
-def get_endpoints(service_id):
+def get_service_endpoints(service_id):
     res = []
     endpoints = db.get_list_of_objects("Endpoint", {"service_id": service_id})
     for endpoint in endpoints:

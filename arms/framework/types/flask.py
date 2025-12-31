@@ -1,6 +1,6 @@
 from utils import Folder, File
 from arms.arm import get_arm
-from arms.endpoints.endpoints import get_endpoints
+from arms.endpoints.endpoints import get_service_endpoints
 
 class Flask:
     def __init__(self, framework_id):
@@ -14,7 +14,7 @@ class Flask:
         repo.upload_files(files)
         
     def get_files(self, service_id):
-        endpoints = get_endpoints(service_id)
+        endpoints = get_service_endpoints(service_id)
         return [
             self.generate_app_file(endpoints),
             self.generate_requirements_file(),

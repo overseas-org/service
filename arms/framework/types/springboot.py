@@ -51,7 +51,7 @@ class Springboot:
     
     def generate_rest_controller(self, endpoints):
         controller_file = File(f"src/main/java/{"/".join(self.params["groupId"].split("."))}/{self.get_artifact()}/HomeController.java")
-        controller_file.content = f"""package com.example.{self.get_artifact()};
+        controller_file.content = f"""package {self.params["groupId"]}.{self.get_artifact()};
 
 import java.util.HashMap;
 import java.util.Map;

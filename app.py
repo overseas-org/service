@@ -90,11 +90,6 @@ def get_pipeline():
 def get_endpoints():
 	# project_id = request.args.get("project_id")
 	service_id = request.args.get("service_id")
-	# db = Database("Endpoints", db_creds)
-	# endpoints = db.get_list_of_objects("Endpoint", {"service_id": service_id})
-	# results = []
-	# for endpoint in endpoints:
-	# 	results.append(db.get_object_by_id(endpoint.endpoint_type, endpoint.endpoint_id, as_dict=True))
 	results = get_service_endpoints(service_id)
 
 	return jsonify(results), 200

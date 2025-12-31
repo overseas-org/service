@@ -27,6 +27,14 @@ def create_db(info, service_name, infrastructure_type, infrastructure_id, **args
                     "value": info.pop("root_password")
                 }
             ]
+            elif db_flavor == "postgres":
+                info["port"] = 5432
+                info["variables"] = [
+                {
+                    "name": "POSTGRES_PASSWORD",
+                    "value": info.pop("root_password")
+                }
+            ]
             else: 
                 info.pop("root_password")
     db_infrastructure_id = create_infrastructure(info, service_name, f"{service_name}-db", db_flavor, **args)

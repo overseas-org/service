@@ -90,7 +90,7 @@ class KubernetesDeployment:
     
     def delete_infrastructure(self):
         name = self.app.lower().replace("_", "-")
-        command = "kubectl delete {resource} {name} -n {namespace}".format(resource="{}", name=name, namespace=self.namespace)
+        command = "kubectl delete {resource} {name} -n {namespace} --ignore-not-found".format(resource="{}", name=name, namespace=self.namespace)
         commands = []
         if self.include_autoScale:
             commands.append(command.format("hpa"))

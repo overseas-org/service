@@ -47,11 +47,11 @@ class KubernetesDeployment:
     def get_yamls(self, service_name):
         folder = Folder(f"{self.app}-deplyment")
         files = [File("deployment.yaml")]
-        if self.include_autoScale == "true":
+        if self.include_autoScale == "1":
             files.append(File("hpa.yaml"))
-        if self.include_service == "true":
+        if self.include_service == "1":
             files.append(File("service.yaml"))
-        if self.include_pv == "true":
+        if self.include_pv == "1":
             files.append(File("pv.yaml"))
             files.append(File("pvc.yaml"))
         folder.files = files
@@ -117,7 +117,7 @@ class KubernetesDeployment:
         if not self.include_pv == "true":
             return ""
         return f"""volumes:
-      - name: {self.app}-volume
+      - name: {self.app.lower()}-volume
         persistentVolumeClaim:
           claimName: {self.app}"""
     
@@ -126,7 +126,7 @@ class KubernetesDeployment:
             return ""
         return f"""volumeMounts:
         - mountPath: "{self.pv_mount_path}"
-          name: {self.app}-volume"""
+          name: {self.app.lower()}-volume"""
     
     def redefine_network_security(self, service_name, service_connections, repo_type, repo_id, service_id):
         allowed_service_accounts = []

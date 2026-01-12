@@ -9,7 +9,7 @@ from variables import db_creds
 from service_comunications.connectors import get_connector
 from arms.arm import update_existens
 from arms.errors import ArmExists
-from utils import File, Folder
+from utils import File, Folder, ByteFile
 
 
 class Github:
@@ -124,13 +124,15 @@ class Github:
         
     def upload_files(self, files):
         for file in files:
-            if isinstance(file, File):
+            if isinstance(file, ByteFile):
+                self.upload_file(file.name, file.content, is_bytes = True)
+            elif isinstance(file, File):
                 self.upload_file(file.name, file.content)
             elif isinstance(file, Folder):
                 self.upload_folder(file)
 
     
-    def upload_file(self, file_path, content, commit_message="Add file via API"):
+    def upload_file(self, file_path, content, commit_message="Add file via API", is_bytes=False):
         """Uploads a single file to GitHub via API."""
         if self.connector["organization"]:
             url = f"https://api.github.com/repos/{self.connector['organization']}/{self.name}/contents/{file_path}"
@@ -138,7 +140,9 @@ class Github:
             url = f"https://api.github.com/repos/{self.connector['account']}/{self.name}/contents/{file_path}"
         
         # Encode content to Base64 (required by GitHub API)
-        encoded_content = base64.b64encode(content.encode()).decode()
+        if not is_bytes:
+            content = content.encode()
+        encoded_content = base64.b64encode(content).decode()
         
         # Check if file already exists (GitHub requires SHA for updates)
         response = requests.get(url, headers={"Authorization": f"token {self.token}"})

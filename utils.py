@@ -43,6 +43,9 @@ class File:
         self.name = name
         self.content = content
 
+class ByteFile(File):
+    pass
+
 def capatlize(word):
     return ''.join(word.capitalize() for word in word.split('_'))
 

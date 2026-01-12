@@ -3,6 +3,9 @@
     "Flask": {
         
     },
+    "React": {
+        
+    },
     "Springboot": {
         "type": "VARCHAR(100)",
         "language": "VARCHAR(100)",
